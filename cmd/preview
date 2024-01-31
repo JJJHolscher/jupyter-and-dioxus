@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+echo "starting server on http://127.0.0.1:5790"
+
+# --lb prints the stdout of subcommands as they're running
+parallel --lb ::: \
+    "python -m http.server 5790"
+    "quarto preview doc --no-serve"
