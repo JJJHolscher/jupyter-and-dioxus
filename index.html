@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Custom Elements - Vanilla</title>
+    <script defer type="module">
+      import init, { run } from './pkg/jupyter_and_dioxus.js';
+      async function main() {
+        await init();
+        run();
+      }
+      main();
+    </script>
+	</head>
+  <body>
+    <ce-dioxus>What happens to me?</ce-dioxus>
+  </body>
+</html>
