@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use web_sys::{console, HtmlElement};
 
 #[component]
-pub fn App(cx: Scope, inner_text: String, inner_html: String) -> Element {
+pub fn App(cx: Scope, inner_text: String) -> Element {
     let mut count = use_state(cx, || 0);
 
     cx.render(rsx! {

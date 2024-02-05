@@ -16,29 +16,19 @@ impl ComponentWrapper {
     }
 }
 
-// #[derive(PartialEq, Props)]
-// struct AppProps {
-// inner_text: String,
-// }
-
 impl CustomElement for ComponentWrapper {
     fn inject_children(&mut self, this: &HtmlElement) {
+        let inner_text = this.inner_text();
+        this.set_inner_html("");
         dioxus_web::launch_with_props(
             App,
-            component::AppProps {
-                inner_text: this.inner_html(),
-                inner_html: "".to_owned(),
-            },
+            component::AppProps { inner_text },
             dioxus_web::Config::new().rootelement(this.deref().clone()),
         );
     }
 
     fn shadow() -> bool {
         false
-    }
-
-    fn connected_callback(&mut self, this: &HtmlElement) {
-        this.inner_html();
     }
 }
 
@@ -50,16 +40,13 @@ impl Default for ComponentWrapper {
 
 #[wasm_bindgen]
 pub fn run() {
-    let f = Closure::wrap(Box::new(move || {
-        ComponentWrapper::define("ce-dioxus");
-    }) as Box<dyn FnMut()>);
-    // let f: Closure<FnMut()> = Closure::new(|| {
-    // ComponentWrapper::define("ce-dioxus");
-    // });
-    // e.set_onresize(Some(f.as_ref().unchecked_ref()));
+    ComponentWrapper::define("ce-dioxus");
+    // let f = Closure::wrap(Box::new(move || {
+        // ComponentWrapper::define("ce-dioxus");
+    // }) as Box<dyn FnMut()>);
 
-    let win = web_sys::window().unwrap();
-    win.add_event_listener_with_callback("load", f.as_ref().unchecked_ref());
+    // let win = web_sys::window().unwrap();
+    // let _ = win.add_event_listener_with_callback("load", f.as_ref().unchecked_ref());
 
-    f.forget(); // It is not good practice, just for simplification!
+    // f.forget(); // It is not good practice, just for simplification!
 }
