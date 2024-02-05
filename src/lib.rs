@@ -22,7 +22,9 @@ impl CustomElement for ComponentWrapper {
         this.set_inner_html("");
         dioxus_web::launch_with_props(
             App,
-            component::AppProps { inner_text },
+            component::AppProps {
+                inner_text: inner_text.to_owned(),
+            },
             dioxus_web::Config::new().rootelement(this.deref().clone()),
         );
     }
@@ -42,11 +44,28 @@ impl Default for ComponentWrapper {
 pub fn run() {
     ComponentWrapper::define("ce-dioxus");
     // let f = Closure::wrap(Box::new(move || {
-        // ComponentWrapper::define("ce-dioxus");
+    // ComponentWrapper::define("ce-dioxus");
     // }) as Box<dyn FnMut()>);
 
     // let win = web_sys::window().unwrap();
     // let _ = win.add_event_listener_with_callback("load", f.as_ref().unchecked_ref());
 
     // f.forget(); // It is not good practice, just for simplification!
+}
+
+#[wasm_bindgen]
+pub fn change(id: String) {
+    let element = web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id(&id)
+        .unwrap();
+    let inner_text = element.inner_html();
+    element.set_inner_html("");
+    dioxus_web::launch_with_props(
+        App,
+        component::AppProps { inner_text },
+        dioxus_web::Config::new().rootelement(element),
+    );
 }
