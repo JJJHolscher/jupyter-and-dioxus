@@ -352,6 +352,12 @@ dependencies = [
 [[package]]
 name = "dioxus-interpreter-js"
 version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d9a3115cf9f550a9af88de615c21a15a72dee44230602087dd7b0c5d01f46c37"
+
+[[package]]
+name = "dioxus-interpreter-js"
+version = "0.4.3"
 source = "git+https://github.com/DioxusLabs/dioxus?rev=dc5e4e3738ac80cb3e333a10340674b575c95abd#dc5e4e3738ac80cb3e333a10340674b575c95abd"
 dependencies = [
  "js-sys",
@@ -382,7 +388,7 @@ dependencies = [
  "console_error_panic_hook",
  "dioxus-core",
  "dioxus-html",
- "dioxus-interpreter-js",
+ "dioxus-interpreter-js 0.4.3 (git+https://github.com/DioxusLabs/dioxus?rev=dc5e4e3738ac80cb3e333a10340674b575c95abd)",
  "futures-channel",
  "futures-util",
  "js-sys",
@@ -625,6 +631,7 @@ dependencies = [
  "custom-elements",
  "dioxus",
  "dioxus-core",
+ "dioxus-interpreter-js 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "dioxus-web",
  "serde",
  "serde_json",

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+	<head>
+    <script type="module">
+      import init, { run, change } from './pkg/jupyter_and_dioxus.js';
+      window.change = change;
+      async function main() {
+        await init();
+        run();
+      }
+      main();
+    </script>
+	</head>
+  <body>
+    <ce-dioxus>What happens to you?</ce-dioxus>
+  </body>
+</html>
