@@ -1,0 +1,45 @@
+
+[project]
+name = "dioxus_widget"
+version = "0.0.1" # TODO; automatically update versions by looking at git
+description = ""
+dependencies = []
+dynamic = ["readme"]
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[git]
+github = "JJJHolscher"
+
+[project.urls]
+homepage = "https://github.com/JJJHolscher/jupyter-and-dioxus"
+
+[[project.authors]]
+name = "Jochem Hölscher"
+email = "a.fake@e.mail"
+
+[build-system]
+requires = [
+    "setuptools>=61.0",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["dioxus_widget"]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[tool.jupytext]
+formats = "ipynb,py"
+
+[tool.pyright]
+# see https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+exclude = ".venv"
+venvPath = "."
+venv = ".venv"
+reportMissingImports = false

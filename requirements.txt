@@ -1,0 +1,8 @@
+build
+debugpy
+jo3util
+jupyterlab
+jupyterlab-vim
+pyright
+twine
+typeguard
