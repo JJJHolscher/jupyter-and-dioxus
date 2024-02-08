@@ -72,7 +72,7 @@ test: $(venv) test_local increment_patch build
 	python -m unittest "$(name).tests"
 
 publish: $(venv)
-	$(call clear_dir,"dist")
+	$(call clear_dir, "dist")
 	python -m build
 	twine upload dist/*
 

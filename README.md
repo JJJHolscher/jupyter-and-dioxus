@@ -30,7 +30,7 @@ Which means the demo worked.
 ## Workflow
 
 1. You create a custom Dioxus element in Rust, using the `custom-elements` crate. See `src/main.rs` for how to do that.
-2. Run `wasm-pack build --debug --target web` such that your custom elements is put into a bunch of js and wasm files in some directory (probably `YOUR_RUST_PACKAGE_ROOT/pkg`).
+2. Run `wasm-pack build --debug --target web` such that your custom elements are put into a bunch of js and wasm files in some directory (probably `YOUR_RUST_PACKAGE_ROOT/pkg`).
 3. `pip install dioxus_widget` 
 4. `import dioxus_widget; dioxus_widget.init(JS_PATH)` a server will launch. JS_PATH is the javascript file you'd normally import in the html module script for loading in the wasm. It's usually found at `YOUR_RUST_PACKAGE_ROOT/pkg/YOUR_RUST_PACKAGE_NAME.js` .
 5. `dioxus_widget.show(CUSTOM_ELEMENT_TAG, INNER_HTML)`

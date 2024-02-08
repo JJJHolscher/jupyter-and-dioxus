@@ -8,23 +8,19 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlElement;
 
-struct ComponentWrapper {}
-
-impl ComponentWrapper {
-    fn new() -> Self {
-        Self {}
-    }
+pub trait CustomDioxusElement {
+    fn new(root: &HtmlElement);
+    fn root_component(cx: Scope<Self>) -> Element;
 }
 
-impl CustomElement for ComponentWrapper {
+impl<T: CustomDioxusElement + Default> CustomElement for T
+{
     fn inject_children(&mut self, this: &HtmlElement) {
-        let inner_text = this.inner_text();
-        this.set_inner_html("");
+        self = CustomDioxusElement::new(this);
+
         dioxus_web::launch_with_props(
-            App,
-            component::AppProps {
-                inner_text: inner_text.to_owned(),
-            },
+            self.root_component,
+            self,
             dioxus_web::Config::new().rootelement(this.deref().clone()),
         );
     }
@@ -34,15 +30,33 @@ impl CustomElement for ComponentWrapper {
     }
 }
 
-impl Default for ComponentWrapper {
-    fn default() -> Self {
-        Self::new()
+#[derive(Props, PartialEq)]
+#[allow(non_camel_case_types)]
+struct ExampleApp {
+    inner_text: String,
+}
+
+impl CustomDioxusElement for ExampleApp {
+    fn new(root: &HtmlElement) -> Self {
+        let inner_text = root.inner_text();
+        root.set_inner_html("");
+        ExampleApp { inner_text }
+    }
+
+    fn root_component(cx: Scope<Self>) -> Element {
+        let mut count = use_state(cx, || 0);
+
+        cx.render(rsx! {
+            h1 { "{cx.props.inner_text}: {count}" }
+            button { onclick: move |_| count += 1, "Up high!" }
+            button { onclick: move |_| count -= 1, "Down low!" }
+        })
     }
 }
 
 #[wasm_bindgen]
 pub fn run() {
-    ComponentWrapper::define("ce-dioxus");
+    ExampleApp::define("ce-dioxus");
     // let f = Closure::wrap(Box::new(move || {
     // ComponentWrapper::define("ce-dioxus");
     // }) as Box<dyn FnMut()>);
