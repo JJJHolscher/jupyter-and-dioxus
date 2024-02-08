@@ -2,31 +2,19 @@ mod component;
 use component::App;
 
 use core::ops::Deref;
-use custom_elements::{inject_stylesheet, CustomElement};
 use dioxus::prelude::*;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::HtmlElement;
 
-pub trait CustomDioxusElement {
-    fn new(root: &HtmlElement);
+pub trait DioxusInElement: Sized + 'static {
+    fn new(root: &HtmlElement) -> Self;
     fn root_component(cx: Scope<Self>) -> Element;
-}
-
-impl<T: CustomDioxusElement + Default> CustomElement for T
-{
-    fn inject_children(&mut self, this: &HtmlElement) {
-        self = CustomDioxusElement::new(this);
-
+    fn launch(root: &HtmlElement) {
         dioxus_web::launch_with_props(
-            self.root_component,
-            self,
-            dioxus_web::Config::new().rootelement(this.deref().clone()),
+            Self::root_component,
+            Self::new(root),
+            dioxus_web::Config::new().rootelement(root.deref().clone()),
         );
-    }
-
-    fn shadow() -> bool {
-        false
     }
 }
 
@@ -36,7 +24,7 @@ struct ExampleApp {
     inner_text: String,
 }
 
-impl CustomDioxusElement for ExampleApp {
+impl DioxusInElement for ExampleApp {
     fn new(root: &HtmlElement) -> Self {
         let inner_text = root.inner_text();
         root.set_inner_html("");
@@ -55,16 +43,8 @@ impl CustomDioxusElement for ExampleApp {
 }
 
 #[wasm_bindgen]
-pub fn run() {
-    ExampleApp::define("ce-dioxus");
-    // let f = Closure::wrap(Box::new(move || {
-    // ComponentWrapper::define("ce-dioxus");
-    // }) as Box<dyn FnMut()>);
-
-    // let win = web_sys::window().unwrap();
-    // let _ = win.add_event_listener_with_callback("load", f.as_ref().unchecked_ref());
-
-    // f.forget(); // It is not good practice, just for simplification!
+pub fn example_app(root: &HtmlElement) {
+    ExampleApp::launch(root);
 }
 
 #[wasm_bindgen]

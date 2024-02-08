@@ -2,16 +2,16 @@
 <html lang="en">
 	<head>
     <script type="module">
-      import init, { run, change } from './pkg/jupyter_and_dioxus.js';
+      import init, { example_app, change } from './pkg/jupyter_and_dioxus.js';
       window.change = change;
       async function main() {
         await init();
-        run();
+        example_app(document.getElementById("example_app"));
       }
       main();
     </script>
 	</head>
   <body>
-    <ce-dioxus>What happens to you?</ce-dioxus>
+    <div id="example_app">High Five Counter</div>
   </body>
 </html>
