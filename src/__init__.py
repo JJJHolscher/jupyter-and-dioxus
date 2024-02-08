@@ -14,17 +14,16 @@ TEMPLATE = """<!doctype html>
 <html lang="en">
   <head>
     <script type="module">
-      import init, { run, change } from "./PACKAGE";
-      window.change = change;
+      import init, { COMPONENT } from "./PACKAGE";
       async function main() {
         await init();
-        run();
+        COMPONENT(document.getElementById("dioxus-component"));
       }
       main();
     </script>
   </head>
   <body>
-    <TAG>DATA</TAG>
+    <div id="dioxus-component">DATA</div>
   </body>
 </html>
 """
@@ -32,7 +31,7 @@ OPEN_WIDGETS = []
 DIRECTORY = Path(".")
 
 
-def init(package_path: str):
+def init(package_path: str, port=8000, verbose=False):
     """Load the custom elements by executing the javascript."""
     global TEMPLATE, SERVER, DIRECTORY
 
@@ -42,23 +41,32 @@ def init(package_path: str):
     SERVER = threading.Thread(
         target=serve,
         name="http server",
-        args=[DIRECTORY]
+        args=[DIRECTORY, port, verbose]
     )
     SERVER.start()
-    return SERVER
+    return SERVER, TEMPLATE
 
 
-def show(ce: str, data: str):
-    """Present the data through a custom element"""
+def show(
+    component: str,
+    data: str,
+    width=500,
+    height=500,
+):
+    """Present the data through a dioxus component"""
     global OPEN_WIDGETS
 
     w = NamedTemporaryFile(mode='w', dir=DIRECTORY, suffix=".html")
-    w.write(TEMPLATE.replace("TAG", ce).replace("DATA", data))
+    w.write(
+        TEMPLATE
+        .replace("COMPONENT", component)
+        .replace("DATA", data)
+    )
     w.flush()
     OPEN_WIDGETS.append(w)
 
     url = "http://localhost:8000/" + Path(w.name).name
-    display(IFrame(url, 500, 500))
+    display(IFrame(url, width, height))
 
 
 def close():
@@ -69,13 +77,26 @@ def close():
     OPEN_WIDGETS = []
 
 
-def serve(directory):
-    class Handler(SimpleHTTPRequestHandler):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, directory=directory, **kwargs)
+def serve(directory, port, verbose):
+    server_address = ('', port)
 
-    server_address = ('', 8000)
-    httpd = HTTPServer(server_address, Handler)
+    if verbose:
+        class Handler(SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=directory, **kwargs)
+
+        httpd = HTTPServer(server_address, Handler)
+
+    else:
+        class SilentHandler(SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=directory, **kwargs)
+
+            def log_message(self, *_):
+                return
+
+        httpd = HTTPServer(server_address, SilentHandler)
+
     httpd.serve_forever()
 
 

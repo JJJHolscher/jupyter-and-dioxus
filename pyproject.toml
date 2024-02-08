@@ -1,7 +1,7 @@
 
 [project]
 name = "dioxus_widget"
-version = "0.0.1" # TODO; automatically update versions by looking at git
+version = "0.0.2" # TODO; automatically update versions by looking at git
 description = ""
 dependencies = []
 dynamic = ["readme"]

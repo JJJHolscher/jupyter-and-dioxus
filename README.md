@@ -42,11 +42,6 @@ tadaa, now you get an iframe into a document with `<custom_element_tag>inner_htm
 
 ## Q&A
 
-> Why use the custom-elements crate and not just directly mount dioxus on elements with a particular id?
-
-This way, in the future (not now), you can also the element from markdown with relatively elegant syntax.
-What you're asking is definitely doable though, and I might add that if that proves extra beneficial.
-
 > Why is the dioxus element inside an iframe?
 
 Some bug in `dioxus_web` disallowed the instantiation of multiple dioxus elements in a single document. Once this is patched, I'll drop the iframes and you can then also access the element from markdown.
@@ -65,7 +60,22 @@ I made this library assuming you have the files locally so out of the box you wo
 But it would be simpler if the dioxus-generated files are served from an already-existing separate server.
 There's a decent chance I'll implement this simple change at some point, though for my personal use I won't need to now.
 
-> Will you support custom elements that were made by different front-end libraries, like Yew or React?
+> Will you support different front-end libraries, like Yew or React?
 
 Probably not since I don't plan to use other libraries. If I do, then they'll probably become included here.  
-Also I will probably add them if you pay me.
+Also I might add them if you pay me.
+
+> Why so many globals in the python package?
+
+I don't want to burden the end user with keeping track of any state.  
+The cost of that is that the `dioxus_widget.init` function cannot be called twice. You get to load 1 package, and that package should contain all the dioxus components you'd want to invoke later.  
+To me, this is obviously flawed, but for my personal purposes it will do. This facet might (breakingly) change later.
+
+> What is the status of this repo?
+
+This repo is a personal tool that is, right now, in active use. If you see that this repo stopped getting commits, I possibly stopped using it.  
+Because it's a personal tool, I won't be shy about introducing breaking changes, and the documentation might get outdated quickly.
+
+Thus far it's pretty small though, and I don't see it bulking anytime soon, so if you make sure to note which commit you're using and don't mind checking the python and rust source code in case of trouble, you should be able to use this well.
+
+And, it need barely be said, but the more you pay me the more pleasant this repo becomes for you.
