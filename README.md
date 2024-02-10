@@ -2,9 +2,9 @@
 
 This repo contains:
 
-- The python package `dioxus_widget`, which can open custom elements made with dioxus in an jupyter notebook.
-- An example rust project that creates custom elements with Dioxus.
-- A demo for presenting custom elements from dioxus in a jupyter notebook.
+- The python package `dioxus_widget`, which can dioxus components in an jupyter notebook.
+- A rust project that exposes dioxus components to `dioxus_widget`.
+- A demo that demonstrates how to use this software.
 
 ## Run the Demo
 
@@ -29,11 +29,12 @@ Which means the demo worked.
 
 ## Workflow
 
-1. You create a Dioxus component in Rust that implements the LaunchInElement Trait. See `src/main.rs` for how to do that.
+0. Add this git repo to your Cargo.toml.
+1. Create a Dioxus component in Rust that implements the LaunchInElement Trait. See `src/lib.rs` for an example.
 2. Run `wasm-pack build --debug --target web` such that your components are put into a bunch of js and wasm files in some directory (probably `YOUR_RUST_PACKAGE_ROOT/pkg`).
 3. `pip install dioxus_widget` 
-4. `import dioxus_widget; dioxus_widget.init(JS_PATH)` a server will launch. JS_PATH is the javascript file you'd normally import in the html module script for loading in the wasm. It's usually found at `YOUR_RUST_PACKAGE_ROOT/pkg/YOUR_RUST_PACKAGE_NAME.js` .
-5. `dioxus_widget.show(FUNCTION_NAME_FOR_LAUNCHING_COMPONENT, INNER_HTML)`
+4. In jupyter, `import dioxus_widget; dioxus_widget.init(JS_PATH)`. JS_PATH is the javascript file you'd normally import in the html module script for loading in the wasm. It's usually found at `YOUR_RUST_PACKAGE_ROOT/pkg/YOUR_RUST_PACKAGE_NAME.js` .
+5. `dioxus_widget.show(FUNCTION_NAME_FOR_LAUNCHING_COMPONENT, DATA_TO_SEND)`
 
 tadaa, now you get an iframe into a document that is empty, aside from your dioxus component.
 
@@ -45,6 +46,12 @@ tadaa, now you get an iframe into a document that is empty, aside from your diox
 > Why is the dioxus element inside an iframe?
 
 Some bug in `dioxus_web` disallowed the instantiation of multiple dioxus elements in a single document. Once this is patched, I'll drop the iframes and `dioxus_web` won't need to launch a server anymore or create temporary files.
+
+> Can I access any javascript variables or rust-variables-exposed-to-javascript from python?
+
+Due to that `dioxus_web` bug, you'll have to extract those from the created iframe, this should become more convenient in the future.  
+But, you'll have to do that work yourself. This package is aimed to (at some point) work with Quarto, which allows you to create a _static_ website from jupyter notebook files. So, no server calls.  
+This means that in Quarto, the python code only gets executed once, during the static site generation. The Dioxus widgets then get run on the client's device but the client's device won't be able to run any python code so the python code cannot respond to anything happening in Dioxus or javascript.  
 
 > What is that doc/_quarto.yml?
 

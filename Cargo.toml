@@ -22,14 +22,10 @@ include = [
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-chrono = { version = "0.4.33", features = ["serde"] }
-custom-elements = "0.2.1"
 dioxus = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd" }
 dioxus-core = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd" }
 dioxus-interpreter-js = "0.4.3"
 dioxus-web = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd" }
-serde = "1.0.196"
-serde_json = "1.0.113"
 wasm-bindgen = "0"
 web-sys = { version = "0.3.67", features = ["HtmlElement", "Element", "Node"] }
 
