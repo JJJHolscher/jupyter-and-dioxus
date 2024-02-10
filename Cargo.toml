@@ -1,7 +1,21 @@
 [package]
 name = "jupyter-and-dioxus"
-version = "0.1.0"
+license = "MIT"
+homepage = "https://github.com/JJJHolscher/jupyter-and-dioxus"
+repository = "https://github.com/JJJHolscher/jupyter-and-dioxus"
+description = """
+Port your Dioxus components to jupyter notebook output cells.
+This crate contains the DioxusInElement Trait, that if implemented, should make your Dioxus components available to the `dioxus_widget` python library.
+You do not _need_ to use this crate to port your components to `dioxus_widget`. It exists mostly for convenience sake and documentation.
+This crate also contains an example implementation.
+"""
+readme = "README.md"
+version = "0.0.1"
 edition = "2021"
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
@@ -14,7 +28,6 @@ dioxus = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb
 dioxus-core = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd" }
 dioxus-interpreter-js = "0.4.3"
 dioxus-web = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd" }
-# dioxus-interpreter-js = { git = "https://github.com/DioxusLabs/dioxus", rev = "dc5e4e3738ac80cb3e333a10340674b575c95abd", features = ["webonly", "minimal_bindings"] }
 serde = "1.0.196"
 serde_json = "1.0.113"
 wasm-bindgen = "0"

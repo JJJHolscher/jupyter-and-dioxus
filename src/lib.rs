@@ -3,8 +3,14 @@ use dioxus::prelude::*;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
+// Implement this trait for a struct that holds any data you want to pass to your component
+// function.
 pub trait DioxusInElement: Sized + 'static {
+    // Run code before launching dioxus.
+    // Use this for modifying the HtmlElement beforehand and for extracting any data you want to pass
+    // to your component.
     fn new(root: &HtmlElement) -> Self;
+    // The root component function.
     fn component(cx: Scope<Self>) -> Element;
     fn launch(root: &HtmlElement) {
         dioxus_web::launch_with_props(
@@ -39,8 +45,11 @@ impl DioxusInElement for ExampleApp {
     }
 }
 
+// The function that when called from javascript, launches your dioxus component on some element.
+// Unfortunately you will probably always need to have a funtion like this.
+// In the future there might be a macro that exposes this function for you if you implemented the
+// DioxusInElement trait.
 #[wasm_bindgen]
 pub fn example_app(root: &HtmlElement) {
     ExampleApp::launch(root);
 }
-
