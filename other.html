@@ -2,8 +2,7 @@
 <html lang="en">
 	<head>
     <script type="module">
-      import init, { example_app, change } from './pkg/jupyter_and_dioxus.js';
-      window.change = change;
+      import init, { example_app } from './pkg/jupyter_and_dioxus.js';
       async function main() {
         await init();
         example_app(document.getElementById("example_app"));

@@ -16,7 +16,7 @@ pub trait DioxusInElement: Sized + 'static {
         dioxus_web::launch_with_props(
             Self::component,
             Self::new(root),
-            dioxus_web::Config::new().rootelement(root.deref().clone()),
+            dioxus_web::Config::new().rootname(root.id()),
         );
     }
 }
