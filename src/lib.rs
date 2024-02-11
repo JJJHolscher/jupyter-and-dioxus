@@ -48,7 +48,7 @@ impl DioxusInElement for ExampleApp {
 // Unfortunately you will probably always need to have a funtion like this.
 // In the future there might be a macro that exposes this function for you if you implemented the
 // DioxusInElement trait.
-// #[wasm_bindgen]
-// pub fn example_app(root: &HtmlElement) {
-    // ExampleApp::launch(root);
-// }
+#[wasm_bindgen]
+pub fn example_app(root: &HtmlElement) {
+    ExampleApp::launch(root);
+}
