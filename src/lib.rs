@@ -1,5 +1,4 @@
-use core::ops::Deref;
-use dioxus::prelude::*;
+use dioxus::prelude::{dioxus_elements, rsx, use_state, Element, Props, Scope};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
