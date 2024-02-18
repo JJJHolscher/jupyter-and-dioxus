@@ -25,10 +25,10 @@ TEMPLATE = """<!doctype html>
         COMPONENT(document.getElementById("dioxus-component"));
       }
       main();
-    </script>
+    </script>STYLE
   </head>
   <body>
-    <div id="dioxus-component">DATA</div>
+    <div id="dioxus-component"ATTRIBUTES>DATA</div>
   </body>
 </html>
 """
@@ -36,19 +36,45 @@ OPEN_WIDGETS = []
 DIRECTORY = Path(".")
 
 
-def init(package_path: str, port=8000, verbose=False):
-    """Load the custom elements by executing the javascript."""
+def init(
+    package_path: str,
+    style_path: str = "",
+    port: int = 8000,
+    verbose: bool = False
+):
+    """Host the custom elements by specifying their location.
+
+    ARGS:
+        package_path: the path to a local javascript file that loads the wasm.
+        style_path: the path to a css file for styling the widget relative to
+            the parent of the `package_path`. It only gets included if it
+            exists and is a css file.
+        port: the port this library's server will listen to.
+        verbose: whether this server will print to stderr.
+    """
     global TEMPLATE, SERVER, DIRECTORY
 
-    path = Path(package_path)
-    TEMPLATE = TEMPLATE.replace("PACKAGE", path.name)
+    # Link the template to the supplied package javascript file.
+    package = Path(package_path)
+    DIRECTORY = package.parent
+    TEMPLATE = TEMPLATE.replace("PACKAGE", package.name)
 
-    DIRECTORY = path.parent
+    # Optionally link the template to a supplied css file.
+    style = DIRECTORY / style_path
+    if style_path and style_path[-4:] == ".css" and style.exists():
+        TEMPLATE = TEMPLATE.replace(
+            "STYLE", f'\n<link rel="stylesheet" href="{style_path}">'
+        )
+    else:
+        TEMPLATE = TEMPLATE.replace("STYLE", "")
+
     # Do cleanup of past `open` calls that weren't closed.
     for f in DIRECTORY.iterdir():
         if f.name[:27] == "__tmp_dioxus_widget_iframe_":
             f.unlink()
 
+    # Host these resources on a separate http server to circumvent
+    # https://github.com/DioxusLabs/dioxus/issues/1907
     SERVER = threading.Thread(
         target=serve,
         name="http server",
@@ -61,12 +87,17 @@ def init(package_path: str, port=8000, verbose=False):
 def show(
     component: str,
     data: str,
+    attr: dict = {},
     width=500,
     height=500,
     no_display=False,
 ):
     """Present the data through a dioxus component"""
     global OPEN_WIDGETS
+
+    atttributes = "" if not attr else " " + "".join([
+        f'{name}="{value}"' for name, value in attr.items()
+    ])
 
     w = NamedTemporaryFile(
         mode='w',
@@ -78,6 +109,7 @@ def show(
         TEMPLATE
         .replace("COMPONENT", component)
         .replace("DATA", data)
+        .replace("ATTRIBUTES", atttributes)
     )
     w.flush()
     OPEN_WIDGETS.append(w)
@@ -93,6 +125,7 @@ def show(
 def debug(
     component: str,
     data: str,
+    attr: dict = {},
     width=500,
     height=500,
 ):
@@ -114,6 +147,7 @@ def debug(
         iframe = show(
             component,
             data,
+            attr,
             width,
             height,
             no_display=True,

@@ -24,17 +24,22 @@ pub trait DioxusInElement: Sized + 'static {
 #[allow(non_camel_case_types)]
 struct ExampleApp {
     inner_text: String,
+    starting_count: i32,
 }
 
 impl DioxusInElement for ExampleApp {
     fn new(root: &HtmlElement) -> Self {
         let inner_text = root.inner_text();
         root.set_inner_html("");
-        ExampleApp { inner_text }
+        let starting_count = match root.get_attribute("start") {
+            Some(count) => count.parse().unwrap(),
+            None => 0
+        };
+        ExampleApp { inner_text, starting_count }
     }
 
     fn component(cx: Scope<Self>) -> Element {
-        let mut count = use_state(cx, || 0);
+        let mut count = use_state(cx, || cx.props.starting_count);
 
         cx.render(rsx! {
             h1 { "{cx.props.inner_text}: {count}" }

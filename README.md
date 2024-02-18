@@ -29,8 +29,7 @@ Which means the demo worked.
 
 ## Workflow
 
-0. Add this git repo to your Cargo.toml.
-1. Create a Dioxus component in Rust that implements the LaunchInElement Trait. See `src/lib.rs` for an example.
+1. Create a Dioxus component in Rust that implements the LaunchInElement Trait (or just anything that behaves similarly from javascripts perspective if you don't want to add this crate). See `src/lib.rs` for an example.
 2. Run `wasm-pack build --debug --target web` such that your components are put into a bunch of js and wasm files in some directory (probably `YOUR_RUST_PACKAGE_ROOT/pkg`).
 3. `pip install dioxus_widget` 
 4. In jupyter, `import dioxus_widget; dioxus_widget.init(JS_PATH)`. JS_PATH is the javascript file you'd normally import in the html module script for loading in the wasm. It's usually found at `YOUR_RUST_PACKAGE_ROOT/pkg/YOUR_RUST_PACKAGE_NAME.js` .
@@ -75,6 +74,10 @@ Also I might add them if you pay me.
 I don't want to burden the end user with keeping track of any state.  
 The cost of that is that the `dioxus_widget.init` function cannot be called twice. You get to load 1 package, and that package should contain all the dioxus components you'd want to invoke later.  
 To me, this is obviously flawed, but for my personal purposes it will do. This facet might (breakingly) change later.
+
+> Can I call dioxus_widget.init() twice?
+
+No sorry, see previous Q-A pair.
 
 > What is the status of this repo?
 
