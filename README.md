@@ -2,7 +2,7 @@
 
 This repo contains:
 
-- The python package `dioxus_widget`, which can dioxus components in an jupyter notebook.
+- The python package `dioxus_widget`, which can show interactive dioxus components in an jupyter notebook.
 - A rust project that exposes dioxus components to `dioxus_widget`.
 - A demo that demonstrates how to use this software.
 
@@ -12,7 +12,7 @@ This repo contains:
 git clone https://github.com/JJJHolscher/jupyter-and-dioxus
 cd jupyter-and-dioxus
 cargo install wasm-pack
-wasm-pack build --target web
+cmd/build
 python -m venv .venv
 . .venv/bin/activate
 pip install jupyterlab
@@ -25,7 +25,7 @@ You should now get a screenshot like this:
 
 ![screenshot of the widget showing in the output of a code cell](fig/widget-screenshot.png)
 
-Which means the demo worked.
+Though the demo notebook has changed a bit since this screenshot, if you see any sort of clickable counter, it means it worked.
 
 ## Workflow
 
@@ -37,7 +37,7 @@ Which means the demo worked.
 
 tadaa, now you get an iframe into a document that is empty, aside from your dioxus component.
 
-6. `dioxus_web.close()` run this to remove temporary html files, only run this after you're done looking at your widgets.
+6. `dioxus_web.clean()` run this to remove temporary html files, run this in a separate cell from any `dioxus_widget.show` and run it after the last `dioxus_widget.show`.
 
 
 ## Q&A
@@ -87,3 +87,10 @@ Because it's a personal tool, I won't be shy about introducing breaking changes,
 Thus far it's pretty small though, and I don't see it bulking anytime soon, so if you make sure to note which commit you're using and don't mind checking the python and rust source code in case of trouble, you should be able to use this well.
 
 And, it need barely be said, but the more you pay me the more pleasant this repo becomes for you.
+
+## troubleshooting
+
+> `dioxus_widget.show` or `dioxus_widget.debug` says it cannot connect.
+
+The widgets are served by a python http server which gets started when you call `dioxus_widget.init`.  
+If you are using an ssh connection to a remote jupyter lab/notebook, make sure that you forward the `dioxus_widget` server port to your local machine.
