@@ -1,7 +1,7 @@
 
 [project]
 name = "dioxus_widget"
-version = "0.0.4" # TODO; automatically update versions by looking at git
+version = "0.0.5" # TODO; automatically update versions by looking at git
 description = ""
 dependencies = [
     "ipywidgets",
