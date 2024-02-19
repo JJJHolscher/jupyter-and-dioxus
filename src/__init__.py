@@ -19,7 +19,7 @@ TEMPLATE = """<!doctype html>
 <html lang="en">
   <head>
     <script type="module">
-      import init, { COMPONENT } from "./PACKAGE";
+      import init, { COMPONENT } from "/PACKAGE";
       async function main() {
         await init();
         COMPONENT(document.getElementById("dioxus-component"));
@@ -34,6 +34,7 @@ TEMPLATE = """<!doctype html>
 """
 OPEN_WIDGETS = []
 DIRECTORY = Path(".")
+PORT = 0
 
 
 def init(
@@ -46,24 +47,23 @@ def init(
 
     ARGS:
         package_path: the path to a local javascript file that loads the wasm.
-        style_path: the path to a css file for styling the widget relative to
-            the parent of the `package_path`. It only gets included if it
-            exists and is a css file.
+        style_path: the path to a css file for styling the widget. It only gets
+            included if it exists and is a css file.
         port: the port this library's server will listen to.
         verbose: whether this server will print to stderr.
     """
-    global TEMPLATE, SERVER, DIRECTORY
+    global TEMPLATE, SERVER, DIRECTORY, PORT
 
     # Link the template to the supplied package javascript file.
     package = Path(package_path)
     DIRECTORY = package.parent
-    TEMPLATE = TEMPLATE.replace("PACKAGE", package.name)
+    TEMPLATE = TEMPLATE.replace("PACKAGE", package_path)
 
     # Optionally link the template to a supplied css file.
-    style = DIRECTORY / style_path
+    style = Path(style_path)
     if style_path and style_path[-4:] == ".css" and style.exists():
         TEMPLATE = TEMPLATE.replace(
-            "STYLE", f'\n<link rel="stylesheet" href="{style_path}">'
+            "STYLE", f'\n<link rel="stylesheet" href="/{style}">'
         )
     else:
         TEMPLATE = TEMPLATE.replace("STYLE", "")
@@ -75,10 +75,11 @@ def init(
 
     # Host these resources on a separate http server to circumvent
     # https://github.com/DioxusLabs/dioxus/issues/1907
+    PORT = port
     SERVER = threading.Thread(
         target=serve,
         name="http server",
-        args=[DIRECTORY, port, verbose]
+        args=[port, verbose]
     )
     SERVER.start()
     return SERVER, TEMPLATE
@@ -114,7 +115,7 @@ def show(
     w.flush()
     OPEN_WIDGETS.append(w)
 
-    url = "http://localhost:8000/" + Path(w.name).name
+    url = f"http://localhost:{PORT}/{DIRECTORY / Path(w.name).name}"
     iframe = IFrame(url, width, height)
     if no_display:
         return iframe
@@ -197,12 +198,12 @@ def clean():
     OPEN_WIDGETS = []
 
 
-def serve(directory, port, verbose):
+def serve(port, verbose):
     server_address = ('', port)
 
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
-            super().__init__(*args, directory=directory, **kwargs)
+            super().__init__(*args, **kwargs)
 
         def end_headers(self):
             self.send_my_headers()
@@ -222,7 +223,7 @@ def serve(directory, port, verbose):
     else:
         class SilentHandler(Handler):
             def __init__(self, *args, **kwargs):
-                super().__init__(*args, directory=directory, **kwargs)
+                super().__init__(*args, **kwargs)
 
             def log_message(self, *_):
                 return
